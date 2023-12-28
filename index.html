@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BINGO Game Client</title>
+  <style>
+    input {
+        width: 300px;
+        height: 50px;
+        border-radius: 30px;
+    }
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-gap: 5px;
+      width: 300px;
+      margin: 30px auto;
+    }
+
+    .cell {
+      border: 1px solid black;
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      font-size: 18px;
+      font-weight: bold; 
+    }
+  </style>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-mZLF4UVrpi/QTWPA7BjNPEnkIfRFn4ZEO3Qt/HFklTJBj/gBOV8G3HcKn4NfQblz" crossorigin="anonymous"></script>
+</head>
+<body>
+  <h1>Messaging App</h1>
+  <div class="matrix">
+    <!-- Row 1 -->
+    <div id="1" class="cell">1</div>
+    <div id="2" class="cell">2</div>
+    <div id="3" class="cell">3</div>
+    <div id="4" class="cell">4</div>
+    <div id="5" class="cell">5</div>
+    <!-- id="" Row 2 -->
+    <div id="6" class="cell">6</div>
+    <div id="7" class="cell">7</div>
+    <div id="8" class="cell">8</div>
+    <div id="9" class="cell">9</div>
+    <div id="10" class="cell">10</div>
+    <!-- id="" Row 3 -->
+    <div id="11" class="cell">11</div>
+    <div id="12" class="cell">12</div>
+    <div id="13" class="cell">13</div>
+    <div id="14" class="cell">14</div>
+    <div id="15" class="cell">15</div>
+    <!-- id="" Row 4 -->
+    <div id="16" class="cell">16</div>
+    <div id="17" class="cell">17</div>
+    <div id="18" class="cell">18</div>
+    <div id="19" class="cell">19</div>
+    <div id="20" class="cell">20</div>
+    <!-- id="" Row 5 -->
+    <div id="21" class="cell">21</div>
+    <div id="22" class="cell">22</div>
+    <div id="23" class="cell">23</div>
+    <div id="24" class="cell">24</div>
+    <div id="25" class="cell">25</div>
+  </div>
+
+
+
+
+
+  <input id="inputField" type="text">
+  <button id="bingoButton">Send Message</button>
+  <div id="messageBox">
+
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script>
+    // Establish a WebSocket connection to the server
+    const socket = io('localhost:3000'); // Replace with your server's address
+
+    // Handle the "connect" event when the client connects to the server
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    // Handle the "move" event when the server sends a move update
+    socket.on('move', (data) => {
+      showMessage(data);
+    });
+
+    socket.on('clickDiv',(data)=> {
+        changeColor(id);
+    })
+    function markBoxesWithColors(idNumber) {
+        //const idNumber = 
+    }
+
+    $(document).ready(function() {
+      $('.cell').click(function() {
+        // Get the ID of the clicked div
+        var divId = $(this).attr('id');
+        console.log(type)
+        // Change the background color of the clicked div
+        $('#' + divId).css('background-color', 'red'); // Change the color to red as an example
+        socket.emit('clickDiv', { id: divId });
+      });
+    });
+    // Handle the "disconnect" event when the client disconnects from the server
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    // Add a click event listener to the button to make a BINGO move
+    const bingoButton = document.getElementById('bingoButton');
+    bingoButton.addEventListener('click', () => {
+      // Replace this with your game logic
+      const move =  document.getElementById("inputField").value;
+      // Send the move to the server
+      socket.emit('move', move);
+    });
+
+    function changeColor(id) {
+        $(`${id.id}`).css('background-color','red');
+    }
+    // Display received messages in the message box
+    function showMessage(message) {
+      const messageBox = document.getElementById('messageBox');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      messageBox.appendChild(messageElement);
+    }
+  </script>
+</body>
+</html>
