@@ -87,27 +87,28 @@
       showMessage(data);
     });
 
-    socket.on('clickDiv',(data)=> {
-        changeColor(id);
-    })
-    function markBoxesWithColors(idNumber) {
-        //const idNumber = 
-    }
-
-    $(document).ready(function() {
-      $('.cell').click(function() {
-        // Get the ID of the clicked div
-        var divId = $(this).attr('id');
-        console.log(type)
-        // Change the background color of the clicked div
-        $('#' + divId).css('background-color', 'red'); // Change the color to red as an example
-        socket.emit('clickDiv', { id: divId });
-      });
-    });
     // Handle the "disconnect" event when the client disconnects from the server
     socket.on('disconnect', () => {
       console.log('Disconnected from server');
     });
+  
+    // handle the on click event for the boxes
+    $(document).ready(function(){
+      $(".cell").on("click",function() {
+        // $(this).css('background-color','black');
+        var elementId = $(this).attr('id');
+        socket.emit('divClick', elementId);
+      })
+    })
+    socket.on('divClick', (elementId) => {
+      $("#"+elementId).css('background-color','yellow');
+      alert($("#"+elementId).text());
+    })
+
+
+
+
+
 
     // Add a click event listener to the button to make a BINGO move
     const bingoButton = document.getElementById('bingoButton');
@@ -118,9 +119,7 @@
       socket.emit('move', move);
     });
 
-    function changeColor(id) {
-        $(`${id.id}`).css('background-color','red');
-    }
+  
     // Display received messages in the message box
     function showMessage(message) {
       const messageBox = document.getElementById('messageBox');

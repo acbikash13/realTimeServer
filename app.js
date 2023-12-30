@@ -9,23 +9,21 @@ const io = socketIo(server);
 
 io.on('connection', (socket) => {
   console.log('A user connected');
-
   // Handle game moves and broadcasts here
   socket.on('move', (data) => {
     // Process the game move
     // Broadcast the move to all connected clients
     io.emit('move', data);
-    
   });
-  socket.on('clickDiv', (data) => {
-    // Broadcast the "clickDiv" event to all connected clients
-    io.emit('clickDiv', data);  
-  });
-
+  socket.on('divClick', (data)=> {
+    console.log("server side on handling of Div clicked")
+    io.emit('divClick', data);
+  })
   socket.on('disconnect', () => {
     console.log('A user disconnected');
   });
 });
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname,('/index.html')));
   });
